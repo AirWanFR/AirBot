@@ -46,7 +46,9 @@ client.on('ready', () => {
         url: 'https://twitch.tv/escano' // URL de la plateforme de streaming (si nécessaire)
       },
     ],
-  }).catch(err => console.error('Erreur lors de la définition du statut:', err));
+  });
+
+  console.log(times + '[INFO] Statut et activité définis.');
 });
 
 // Gérer les messages
