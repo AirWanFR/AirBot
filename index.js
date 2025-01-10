@@ -38,13 +38,17 @@ client.on('ready', () => {
 
   // Définir le statut et l'activité
   client.user.setPresence({
-  status: 'online',
-  activities: [{ name: 'Escanor', type: 1, url: 'https://twitch.tv/escano' }],
-})
-  .then(() => console.log('Présence mise à jour avec succès !'))
-  .catch(err => console.error('Erreur de mise à jour de la présence : ', err));
+    status: 'online', // Statut : 'online', 'idle', 'dnd', 'invisible'
+    activities: [
+      {
+        name: 'Escanor', // Nom de l'activité
+        type: 1, // STREAMING
+        url: 'https://twitch.tv/escano', // URL du stream
+      },
+    ],
+  });
 
-  console.log(times + '[INFO] Statut et activité définis.');
+  console.log('Présence mise à jour avec succès');
 });
 
 // Gérer les messages
