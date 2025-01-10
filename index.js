@@ -13,7 +13,6 @@ const client = new Client({
 });
 
 // Quand le bot est prêt
-
 var now = new Date();
 var hour = now.getHours();
 var minute = now.getMinutes();
@@ -28,25 +27,25 @@ client.on('ready', () => {
   console.log(times+`\x1b[32m%s\x1b[0m`,'[OK]','\x1b[0m','Chargement terminé');
   console.log(times+`\x1b[32m%s\x1b[0m`,'[OK]','\x1b[0m','Prêt et connecté');
 
-  const activities = [
-      "rp!help | Inside/Outside",
-      `rp!help | ${client.guilds.size} serveurs`,
-      `rp!help | ${client.users.size} users`
-  ];
+  // Définir le statut et l'activité
   client.user.setPresence({
     status: 'dnd', // Statut du bot : 'online', 'idle', 'dnd', ou 'invisible'
     activities: [
       {
         name: 'Escanor', // Message du statut
         type: 'STREAMING', // Type d'activité : PLAYING, WATCHING, LISTENING, etc.
+        url: 'https://twitch.tv/escano' // URL de la plateforme de streaming (si nécessaire)
       },
     ],
   });
-}
+});
+
 // Gérer les messages
 client.on('messageCreate', (message) => {
   if (message.author.bot) return;
-  if (message.content === '!status') message.reply('✅ Le bot est en ligne !');
+  if (message.content === '!status') {
+    message.reply('✅ Le bot est en ligne !');
+  }
 });
 
 // Lancer le bot
@@ -56,5 +55,3 @@ client.login(DISCORD_TOKEN);
 const app = express();
 app.get('/', (req, res) => res.send('Le bot est actif !'));
 app.listen(PORT, () => console.log(`🌐 Serveur actif sur le port ${PORT}`));
-
-
