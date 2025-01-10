@@ -38,15 +38,11 @@ client.on('ready', () => {
 
   // Définir le statut et l'activité
   client.user.setPresence({
-    status: 'online', // Statut du bot : 'online', 'idle', 'dnd', ou 'invisible'
-    activities: [
-      {
-        name: 'Escanor', // Message du statut
-        type: 'STREAMING', // Type d'activité : PLAYING, WATCHING, LISTENING, etc.
-        url: 'https://twitch.tv/escano' // URL de la plateforme de streaming (si nécessaire)
-      },
-    ],
-  });
+  status: 'online',
+  activities: [{ name: 'Escanor', type: 1, url: 'https://twitch.tv/escano' }],
+})
+  .then(() => console.log('Présence mise à jour avec succès !'))
+  .catch(err => console.error('Erreur de mise à jour de la présence : ', err));
 
   console.log(times + '[INFO] Statut et activité définis.');
 });
