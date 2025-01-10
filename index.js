@@ -5,6 +5,7 @@ const express = require('express');
 
 // Charger les variables d'environnement
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
+const CHANNEL_ID = process.env.CHANNEL_ID; // ID du canal pour envoyer un message
 const PORT = process.env.PORT || 3000;
 
 // Configurer le bot Discord
@@ -20,12 +21,12 @@ var second = now.getSeconds();
 var times = (`[${hour}:${minute}:${second}]/`);
 
 client.on('ready', () => {
-  console.log(times+`\x1b[33m%s\x1b[0m`,'[WARN]','\x1b[0m','Connexion en cours...');
-  console.log(times+`\x1b[33m%s\x1b[0m`,'[WARN]','\x1b[0m','Connexion à l\'API Discord.js en cours...');
-  console.log(times+`\x1b[32m%s\x1b[0m`,'[OK]','\x1b[0m', 'Connexion à l\'API Discord.js effectuée');
-  console.log(times+`\x1b[36m%s\x1b[0m`,'[INFO]', '\x1b[0m','Connecté sur ' + client.user.username + '#' + client.user.discriminator);
-  console.log(times+`\x1b[32m%s\x1b[0m`,'[OK]','\x1b[0m','Chargement terminé');
-  console.log(times+`\x1b[32m%s\x1b[0m`,'[OK]','\x1b[0m','Prêt et connecté');
+  console.log(times + `\x1b[33m%s\x1b[0m`, '[WARN]', '\x1b[0m', 'Connexion en cours...');
+  console.log(times + `\x1b[33m%s\x1b[0m`, '[WARN]', '\x1b[0m', 'Connexion à l\'API Discord.js en cours...');
+  console.log(times + `\x1b[32m%s\x1b[0m`, '[OK]', '\x1b[0m', 'Connexion à l\'API Discord.js effectuée');
+  console.log(times + `\x1b[36m%s\x1b[0m`, '[INFO]', '\x1b[0m', 'Connecté sur ' + client.user.username + '#' + client.user.discriminator);
+  console.log(times + `\x1b[32m%s\x1b[0m`, '[OK]', '\x1b[0m', 'Chargement terminé');
+  console.log(times + `\x1b[32m%s\x1b[0m`, '[OK]', '\x1b[0m', 'Prêt et connecté');
 
   // Définir le statut et l'activité
   client.user.setPresence({
@@ -38,13 +39,34 @@ client.on('ready', () => {
       },
     ],
   });
+
+  // Envoyer un message dans un canal spécifique lorsque le bot est en ligne
+  const channel = client.channels.cache.get(CHANNEL_SD); // Accéder au canal via son ID
+  if (channel) {
+    channel.send('Le bot est maintenant en ligne ! 🚀');
+  } else {
+    console.log('Le canal spécifié n\'a pas été trouvé.');
+  }
 });
 
 // Gérer les messages
 client.on('messageCreate', (message) => {
   if (message.author.bot) return;
+
+  // Commande !status pour vérifier si le bot est en ligne
   if (message.content === '!status') {
     message.reply('✅ Le bot est en ligne !');
+  }
+
+  // Commande !shutdown pour éteindre le bot
+  if (message.content === '!shutdown') {
+    // Vérifier si l'utilisateur a les permissions d'administrateur (ou toute autre permission spécifique)
+    if (message.member.permissions.has('ADMINISTRATOR')) {
+      message.reply('Le bot s\'arrête...');
+      client.destroy(); // Déconnexion du bot
+    } else {
+      message.reply('Vous n\'avez pas les permissions nécessaires pour éteindre le bot.');
+    }
   }
 });
 
