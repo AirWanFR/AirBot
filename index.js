@@ -41,7 +41,7 @@ client.on('ready', () => {
   });
 
   // Envoyer un message dans un canal spécifique lorsque le bot est en ligne
-  const channel = client.channels.cache.get(CHANNEL_SD); // Accéder au canal via son ID
+  const channel = client.channels.cache.get(CHANNEL_LOG); // Accéder au canal via son ID
   if (channel) {
     channel.send('Le bot est maintenant en ligne ! 🚀');
   } else {
