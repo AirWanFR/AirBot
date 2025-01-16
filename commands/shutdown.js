@@ -1,7 +1,7 @@
 module.exports = {
   name: '!shutdown',
   execute(message) {
-    message.reply('Le bot se déconnecte et arrête le serveur...');
+    message.reply('⭕ Le bot se déconnecte et arrête le serveur...');
     console.log('[INFO] Déconnexion en cours...');
     
     // Déconnecter le bot et arrêter le processus
