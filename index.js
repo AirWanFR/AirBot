@@ -37,18 +37,18 @@ client.on('ready', () => {
   // Envoie un message dans le canal de log
   const channel = client.channels.cache.get(CHANNEL_LOG); 
   if (channel) {
-    channel.send('Le bot est en ligne et prêt !');
+    channel.send('🚀 Le bot est en ligne et prêt !');
   } else {
-    console.log('Canal non trouvé !');
+    console.log('❌ Canal non trouvé !');
   }
 
   // Définir le statut et l'activité
   client.user.setPresence({
     status: 'online',
-    activities: [{ name: 'Escanor', type: 1, url: 'https://twitch.tv/escano' }],
+    activities: [{ name: 'Escanor', type: 2, url: 'https://twitch.tv/erwancbr' }],
   });
 
-  console.log('Présence mise à jour avec succès');
+  console.log('🔄 Présence mise à jour avec succès');
 });
 
 // Gérer les messages
