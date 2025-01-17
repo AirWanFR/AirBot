@@ -3,24 +3,31 @@ const { EmbedBuilder } = require('discord.js');
 module.exports = {
   name: '!airwan',
   execute(message) {
-      const exampleEmbed = new EmbedBuilder()
-  	.setColor(0x0099FF)
-  	.setTitle('Some title')
-  	.setURL('https://discord.js.org/')
-  	.setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
-  	.setDescription('Some description here')
-  	.setThumbnail('https://i.imgur.com/AfFp7pu.png')
-  	.addFields(
-  		{ name: 'Regular field title', value: 'Some value here' },
-  		{ name: '\u200B', value: '\u200B' },
-  		{ name: 'Inline field title', value: 'Some value here', inline: true },
-  		{ name: 'Inline field title', value: 'Some value here', inline: true },
-  	)
-  	.addFields({ name: 'Inline field title', value: 'Some value here', inline: true })
-  	.setImage('https://i.imgur.com/AfFp7pu.png')
-  	.setTimestamp()
-  	.setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/AfFp7pu.png' });
-  
-  channel.send({ embeds: [exampleEmbed] });
+    // Extraire l'utilisateur qui a envoyé la commande
+    const user = message.author;
+    
+    // Créer l'embed
+    const exampleEmbed = new EmbedBuilder()
+      .setColor(0x0099FF)
+      .setTitle('Bienvenue dans le monde d\'Airwan!')
+      .setURL('https://discord.js.org/')
+      .setAuthor({
+        name: user.username, 
+        iconURL: user.displayAvatarURL(), // Avatar de l'utilisateur
+        url: 'https://discord.js.org'
+      })
+      .setDescription(`Hello ${user.username}, voici un exemple d'embed personnalisé.`)
+      .setThumbnail(user.displayAvatarURL())  // Utilisation de l'avatar de l'utilisateur
+      .addFields(
+        { name: 'Information', value: 'Voici une information dynamique !', inline: false },
+        { name: 'Date', value: new Date().toLocaleDateString(), inline: true },
+        { name: 'Heure', value: new Date().toLocaleTimeString(), inline: true },
+      )
+      .setImage('https://i.imgur.com/AfFp7pu.png')
+      .setTimestamp()  // Ajouter la date et l'heure de l'envoi
+      .setFooter({ text: `Commande exécutée par ${user.username}`, iconURL: user.displayAvatarURL() });
+
+    // Envoyer l'embed dans le canal d'où provient la commande
+    message.channel.send({ embeds: [exampleEmbed] });
   },
 };
