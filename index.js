@@ -95,11 +95,12 @@ client.on('ready', () => {
     console.log(clc.yellow(`${times}`) + clc.green(` [SERVER]`) + ` Initialisation du serveur en cours...`);
     console.log(clc.yellow(`${times}`) + clc.blue(` [SERVER]`) + ` Serveur opérationnel. Les systèmes sont prêts.`);
     console.log(clc.yellow(`${times}`) + clc.cyan(` [BOT]`) + ` Démarrage du bot... Activation des modules.`);
-    displayRandomMessage();
     console.log(clc.yellow(`${times}`) + clc.green(` [BOT]`) + ` Connecté sur ${client.user.username}#${client.user.discriminator}.`);
     console.log(clc.yellow(`${times}`) + clc.magenta(` [BOT]`) + ` Chargement des commandes terminées.`);
     console.log(clc.yellow(`${times}`) + clc.red(` [SERVER]`) + ` Attention : fluctuations détectées dans les logs du démarrage. Tout est (probablement) sous contrôle.`);
     console.log(clc.yellow(`${times}`) + clc.green(` [OK]`) + ` Le serveur et le bot sont prêts à fonctionner.`);
+    displayRandomMessage();
+
     
 
     // Envoie un message dans le canal de log
