@@ -17,17 +17,17 @@ module.exports = {
       return;
     }
 
-    // Modifier le statut du bot
-    message.client.user.setPresence({
-      status: status,
-    })
-      .then(() => {
-        message.reply(`✅ Statut du bot mis à jour avec succès : \`${status}\`.`);
-        console.log('\x1b[32m' + `[INFO] Statut du bot changé à "${status}".` + '\x1b[0m'); // Vert
-      })
-      .catch((error) => {
-        message.reply('❌ Une erreur est survenue lors de la mise à jour du statut.');
-        console.log('\x1b[31m' + `[ERROR] Impossible de changer le statut : ${error}` + '\x1b[0m'); // Rouge
+    try {
+      // Modifier le statut du bot
+      message.client.user.setPresence({
+        status: status,
       });
+
+      message.reply(`✅ Statut du bot mis à jour avec succès : \`${status}\`.`);
+      console.log('\x1b[32m' + `[INFO] Statut du bot changé à "${status}".` + '\x1b[0m'); // Vert
+    } catch (error) {
+      message.reply('❌ Une erreur est survenue lors de la mise à jour du statut.');
+      console.log('\x1b[31m' + `[ERROR] Impossible de changer le statut : ${error}` + '\x1b[0m'); // Rouge
+    }
   },
 };
