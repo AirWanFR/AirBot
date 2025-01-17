@@ -1,4 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
+const clc = require('cli-color'); // Importation de `cli-color`
+
 
 module.exports = {
   name: '!shutdown',
@@ -13,14 +15,14 @@ module.exports = {
     // Envoyer le message coloré via un embed
     message.reply({ embeds: [embed] });
 
-    console.log('\x1b[33m[INFO] Déconnexion en cours...\x1b[39m'); // Jaune pour l'info de déconnexion
+    console.log(clc.yellow('[INFO]') + 'Déconnexion en cours...'); // Jaune pour l'info de déconnexion
     
     // Déconnecter le bot et arrêter le processus
     message.client.destroy().then(() => {
-      console.log('\x1b[32m[INFO] Bot déconnecté.\x1b[39m'); // Vert pour indiquer la déconnexion réussie
+      console.log(clc.red('[INFO] Bot déconnecté')); // Vert pour indiquer la déconnexion réussie
       process.exit(); // Arrêter le processus Node.js
     }).catch((error) => {
-      console.log('\x1b[31m[ERROR] Une erreur est survenue lors de la déconnexion :\x1b[39m', error); // Rouge pour une erreur
+      console.log(clc.red('[ERROR] Une erreur est survenue lors de la déconnexion :', error));// Rouge pour une erreur
     });
   },
 };
