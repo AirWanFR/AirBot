@@ -53,6 +53,26 @@ function rotateActivity() {
   // Passer à l'activité suivante
   currentActivityIndex = (currentActivityIndex + 1) % activities.length;
 }
+// Liste des messages
+const messages = [
+    clc.yellow(`${getCurrentTime()}`) + clc.green(` [OK]`) + ` Le système de sécurité est en ligne. Espérons que rien ne sortira des coulisses cette nuit...`,
+    clc.yellow(`${getCurrentTime()}`) + clc.red(` [WARNING]`) + ` Attention : Freddy a été aperçu près de la scène.`,
+    clc.yellow(`${getCurrentTime()}`) + clc.blue(` [INFO]`) + ` Les caméras fonctionnent... mais qui surveille vraiment ?`,
+    clc.yellow(`${getCurrentTime()}`) + clc.magenta(` [SYSTEM]`) + ` Activation des animatroniques pour le mode veille... ou pas.`,
+    clc.yellow(`${getCurrentTime()}`) + clc.cyan(` [DEBUG]`) + ` Vérification de la batterie des portes : 99%. Ça devrait suffire... non ?`,
+    clc.yellow(`${getCurrentTime()}`) + clc.white(` [EVENT]`) + ` Foxy semble impatient. Pas de sprint pour l'instant.`,
+    clc.yellow(`${getCurrentTime()}`) + clc.red(` [ERROR]`) + ` Une erreur a été détectée dans la salle des pièces détachées... Bonne chance.`,
+    clc.yellow(`${getCurrentTime()}`) + clc.green(` [LOADING]`) + ` Chargement des chansons de Freddy... Pourquoi la mélodie fait-elle si peur ?`,
+    clc.yellow(`${getCurrentTime()}`) + clc.magenta(` [FUN]`) + ` Bienvenue au Freddy Fazbear's Pizza, où la magie prend vie. Ne reste pas trop tard.`,
+    clc.yellow(`${getCurrentTime()}`) + clc.red(` [WARNING]`) + ` Le pouvoir commence à diminuer. Les lumières vacillent légèrement.`,
+    clc.yellow(`${getCurrentTime()}`) + clc.green(` [OK]`) + ` Connecté sur ${client.user?.username ?? "BOT"}#${client.user?.discriminator ?? "0000"}. Évitez de croiser les animatroniques.`
+];
+
+// Fonction pour afficher un message aléatoire
+const displayRandomMessage = () => {
+    const randomIndex = Math.floor(Math.random() * messages.length);
+    console.log(messages[randomIndex]);
+};
 
 // Quand le bot est prêt
 client.on('ready', () => {
@@ -64,7 +84,15 @@ client.on('ready', () => {
 
   try {
     console.log(clc.yellow(`${times}`) + clc.green(` [OK]`) + ` Connexion à l'API Discord.js effectuée`);
-    console.log(clc.yellow(`${times}`) + clc.green(` [INFO]`) + ` Connecté sur ${client.user.username}#${client.user.discriminator}`);
+    console.log(clc.yellow(`${times}`) + clc.green(` [SERVER]`) + ` Initialisation du serveur en cours...`);
+    console.log(clc.yellow(`${times}`) + clc.blue(` [SERVER]`) + ` Serveur opérationnel. Les systèmes sont prêts.`);
+    console.log(clc.yellow(`${times}`) + clc.cyan(` [BOT]`) + ` Démarrage du bot... Activation des modules.`);
+    displayRandomMessage();
+    console.log(clc.yellow(`${times}`) + clc.green(` [BOT]`) + ` Connecté sur ${client.user.username}#${client.user.discriminator}.`);
+    console.log(clc.yellow(`${times}`) + clc.magenta(` [BOT]`) + ` Chargement des commandes terminées.`);
+    console.log(clc.yellow(`${times}`) + clc.red(` [SERVER]`) + ` Attention : fluctuations détectées dans les logs du démarrage. Tout est (probablement) sous contrôle.`);
+    console.log(clc.yellow(`${times}`) + clc.green(` [OK]`) + ` Le serveur et le bot sont prêts à fonctionner.`);
+    
 
     // Envoie un message dans le canal de log
     const channel = client.channels.cache.get(CHANNEL_LOG);
