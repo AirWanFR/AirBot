@@ -53,20 +53,27 @@ function rotateActivity() {
   // Passer à l'activité suivante
   currentActivityIndex = (currentActivityIndex + 1) % activities.length;
 }
+// Fonction pour obtenir l'heure actuelle
+const getCurrentTime = () => {
+    const date = new Date();
+    return date.toLocaleTimeString();
+};
+
 // Liste des messages
 const messages = [
-    clc.yellow(`${times}`) + clc.green(` [OK]`) + ` Le système de sécurité est en ligne. Espérons que rien ne sortira des coulisses cette nuit...`,
-    clc.yellow(`${times}`) + clc.red(` [WARNING]`) + ` Attention : Freddy a été aperçu près de la scène.`,
-    clc.yellow(`${times}`) + clc.blue(` [INFO]`) + ` Les caméras fonctionnent... mais qui surveille vraiment ?`,
-    clc.yellow(`${times}`) + clc.magenta(` [SYSTEM]`) + ` Activation des animatroniques pour le mode veille... ou pas.`,
-    clc.yellow(`${times}`) + clc.cyan(` [DEBUG]`) + ` Vérification de la batterie des portes : 99%. Ça devrait suffire... non ?`,
-    clc.yellow(`${times}`) + clc.white(` [EVENT]`) + ` Foxy semble impatient. Pas de sprint pour l'instant.`,
-    clc.yellow(`${times}`) + clc.red(` [ERROR]`) + ` Une erreur a été détectée dans la salle des pièces détachées... Bonne chance.`,
-    clc.yellow(`${times}`) + clc.green(` [LOADING]`) + ` Chargement des chansons de Freddy... Pourquoi la mélodie fait-elle si peur ?`,
-    clc.yellow(`${times}`) + clc.magenta(` [FUN]`) + ` Bienvenue au Freddy Fazbear's Pizza, où la magie prend vie. Ne reste pas trop tard.`,
-    clc.yellow(`${times}`) + clc.red(` [WARNING]`) + ` Le pouvoir commence à diminuer. Les lumières vacillent légèrement.`,
-    clc.yellow(`${times}`) + clc.green(` [OK]`) + ` Connecté sur ${client.user?.username ?? "BOT"}#${client.user?.discriminator ?? "0000"}. Évitez de croiser les animatroniques.`
+    clc.yellow(`${getCurrentTime()}`) + clc.green(` [OK]`) + ` Le système de sécurité est en ligne. Espérons que rien ne sortira des coulisses cette nuit...`,
+    clc.yellow(`${getCurrentTime()}`) + clc.red(` [WARNING]`) + ` Attention : Freddy a été aperçu près de la scène.`,
+    clc.yellow(`${getCurrentTime()}`) + clc.blue(` [INFO]`) + ` Les caméras fonctionnent... mais qui surveille vraiment ?`,
+    clc.yellow(`${getCurrentTime()}`) + clc.magenta(` [SYSTEM]`) + ` Activation des animatroniques pour le mode veille... ou pas.`,
+    clc.yellow(`${getCurrentTime()}`) + clc.cyan(` [DEBUG]`) + ` Vérification de la batterie des portes : 99%. Ça devrait suffire... non ?`,
+    clc.yellow(`${getCurrentTime()}`) + clc.white(` [EVENT]`) + ` Foxy semble impatient. Pas de sprint pour l'instant.`,
+    clc.yellow(`${getCurrentTime()}`) + clc.red(` [ERROR]`) + ` Une erreur a été détectée dans la salle des pièces détachées... Bonne chance.`,
+    clc.yellow(`${getCurrentTime()}`) + clc.green(` [LOADING]`) + ` Chargement des chansons de Freddy... Pourquoi la mélodie fait-elle si peur ?`,
+    clc.yellow(`${getCurrentTime()}`) + clc.magenta(` [FUN]`) + ` Bienvenue au Freddy Fazbear's Pizza, où la magie prend vie. Ne reste pas trop tard.`,
+    clc.yellow(`${getCurrentTime()}`) + clc.red(` [WARNING]`) + ` Le pouvoir commence à diminuer. Les lumières vacillent légèrement.`,
+    clc.yellow(`${getCurrentTime()}`) + clc.green(` [OK]`) + ` Connecté sur ${client.user?.username ?? "BOT"}#${client.user?.discriminator ?? "0000"}. Évitez de croiser les animatroniques.`
 ];
+
 
 // Fonction pour afficher un message aléatoire
 const displayRandomMessage = () => {
