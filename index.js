@@ -44,9 +44,9 @@ function rotateActivity() {
   // Log de l'activité dans le canal de logs (s'il existe)
   const channel = client.channels.cache.get(CHANNEL_LOG);
   if (channel) {
-    channel.send(`🔄 [INFO] Activité mise à jour : **${activity.name}**`);
+    channel.send(`\`\`\`fix\n🔄 [INFO] Activité mise à jour : **${activity.name}**\n\`\`\``);
   } else {
-    console.log('❌ Canal de log introuvable pour l\'activité');
+    console.log(`\x1b[33m❌ Canal de log introuvable pour l'activité\x1b[39m`);
   }
 
   // Passer à l'activité suivante
@@ -54,27 +54,31 @@ function rotateActivity() {
 }
 
 // Quand le bot est prêt
-var now = new Date();
-var hour = now.getHours();
-var minute = now.getMinutes();
-var second = now.getSeconds();
-var times = (`[${hour}:${minute}:${second}]/`);
-
 client.on('ready', () => {
-  console.log(times + '[OK] Connexion à l\'API Discord.js effectuée');
-  console.log(times + '[INFO] Connecté sur ' + client.user.username + '#' + client.user.discriminator);
+  const now = new Date();
+  const hour = now.getHours();
+  const minute = now.getMinutes();
+  const second = now.getSeconds();
+  const times = `[${hour}:${minute}:${second}]`;
 
-  // Envoie un message dans le canal de log
-  const channel = client.channels.cache.get(CHANNEL_LOG);
-  if (channel) {
-    channel.send(times + '🚀 Le bot est en ligne et prêt !');
-  } else {
-    console.log('❌ Canal de log introuvable lors du démarrage');
+  try {
+    console.log(`\x1b[32m${times} [OK] Connexion à l'API Discord.js effectuée\x1b[39m`);
+    console.log(`\x1b[32m${times} [INFO] Connecté sur ${client.user.username}#${client.user.discriminator}\x1b[39m`);
+
+    // Envoie un message dans le canal de log
+    const channel = client.channels.cache.get(CHANNEL_LOG);
+    if (channel) {
+      channel.send(`\`\`\`css\n${times} 🚀 Le bot est en ligne et prêt !\n\`\`\``);
+    } else {
+      console.log(`\x1b[31m❌ Canal de log introuvable lors du démarrage\x1b[39m`);
+    }
+
+    // Lancer la rotation des activités toutes les 20 secondes
+    rotateActivity(); // Initialiser avec la première activité
+    setInterval(rotateActivity, 20000); // Changer toutes les 20 secondes
+  } catch (error) {
+    console.log(`\x1b[31m${times} [ERROR] Erreur lors de la préparation du bot : ${error.message}\x1b[39m`);
   }
-
-  // Lancer la rotation des activités toutes les 20 secondes
-  rotateActivity(); // Initialiser avec la première activité
-  setInterval(rotateActivity, 20000); // Changer toutes les 20 secondes
 });
 
 // Gérer les messages
@@ -85,6 +89,17 @@ client.on('messageCreate', (message) => {
   if (client.commands.has(commandName)) {
     client.commands.get(commandName)(message);
   }
+});
+
+// Quand le bot se déconnecte
+client.on('disconnect', () => {
+  const now = new Date();
+  const hour = now.getHours();
+  const minute = now.getMinutes();
+  const second = now.getSeconds();
+  const times = `[${hour}:${minute}:${second}]`;
+
+  console.log(`\x1b[31m${times} [ERROR] Le bot a été déconnecté ou a rencontré une erreur\x1b[39m`);
 });
 
 // Lancer le bot
