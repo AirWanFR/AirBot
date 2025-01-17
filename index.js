@@ -55,8 +55,12 @@ function rotateActivity() {
 }
 // Fonction pour obtenir l'heure actuelle
 const getCurrentTime = () => {
-    const date = new Date();
-    return date.toLocaleTimeString();
+    const now = new Date();
+    const hour = now.getHours();
+    const minute = now.getMinutes();
+    const second = now.getSeconds();
+    const times = `[${hour}:${minute}:${second}]`;
+    return ${times};
 };
 
 // Liste des messages
