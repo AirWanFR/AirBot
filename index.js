@@ -23,6 +23,29 @@ fs.readdirSync(commandsPath).forEach((file) => {
   client.commands.set(command.name, command.execute);
 });
 
+// Définir les activités à changer
+const activities = [
+  { name: 'Escanor', type: 2, url: 'https://twitch.tv/erwancbr' }, // Écoute "Escanor"
+  { name: 'au soleil ☀️', type: 0 }, // Joue à "au soleil"
+  { name: 'les messages', type: 3 }, // Regarde "les messages"
+  { name: 'la paix dans le monde 🌍', type: 5 }, // En compétition sur "la paix dans le monde"
+];
+
+let currentActivityIndex = 0;
+
+// Fonction pour changer l'activité cycliquement
+function rotateActivity() {
+  const activity = activities[currentActivityIndex];
+  client.user.setPresence({
+    status: 'online', // Statut du bot
+    activities: [activity], // Activité actuelle
+  });
+  console.log(`[INFO] Activité mise à jour : ${activity.name}`);
+
+  // Passer à l'activité suivante
+  currentActivityIndex = (currentActivityIndex + 1) % activities.length;
+}
+
 // Quand le bot est prêt
 var now = new Date();
 var hour = now.getHours();
@@ -42,13 +65,9 @@ client.on('ready', () => {
     console.log('❌ Canal non trouvé !');
   }
 
-  // Définir le statut et l'activité
-  client.user.setPresence({
-    status: 'online',
-    activities: [{ name: 'Escanor', type: 2, url: 'https://twitch.tv/erwancbr' }],
-  });
-
-  console.log('🔄 Présence mise à jour avec succès');
+  // Lancer la rotation des activités toutes les 10 secondes
+  rotateActivity(); // Initialiser avec la première activité
+  setInterval(rotateActivity, 10000); // Changer toutes les 10 secondes
 });
 
 // Gérer les messages
