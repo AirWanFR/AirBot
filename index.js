@@ -1,9 +1,9 @@
 // Charger les bibliothèques nécessaires
 require('dotenv').config();
-const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-const color = require('color'); // Importation de la bibliothèque color
+const chalk = require('chalk'); // Importation de la bibliothèque chalk
 
 // Charger les variables d'environnement
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
@@ -47,7 +47,7 @@ function rotateActivity() {
   if (channel) {
     channel.send(`\`\`\`fix\n🔄 [INFO] Activité mise à jour : **${activity.name}**\n\`\`\``);
   } else {
-    console.log(color('yellow')(`❌ Canal de log introuvable pour l'activité`));
+    console.log(chalk.yellow(`❌ Canal de log introuvable pour l'activité`));
   }
 
   // Passer à l'activité suivante
@@ -63,22 +63,22 @@ client.on('ready', () => {
   const times = `[${hour}:${minute}:${second}]`;
 
   try {
-    console.log(color('green')(`${times} [OK] Connexion à l'API Discord.js effectuée`));
-    console.log(color('green')(`${times} [INFO] Connecté sur ${client.user.username}#${client.user.discriminator}`));
+    console.log(chalk.green(`${times} [OK] Connexion à l'API Discord.js effectuée`));
+    console.log(chalk.green(`${times} [INFO] Connecté sur ${client.user.username}#${client.user.discriminator}`));
 
     // Envoie un message dans le canal de log
     const channel = client.channels.cache.get(CHANNEL_LOG);
     if (channel) {
       channel.send(`\`\`\`css\n${times} 🚀 Le bot est en ligne et prêt !\n\`\`\``);
     } else {
-      console.log(color('red')(`❌ Canal de log introuvable lors du démarrage`));
+      console.log(chalk.red(`❌ Canal de log introuvable lors du démarrage`));
     }
 
     // Lancer la rotation des activités toutes les 20 secondes
     rotateActivity(); // Initialiser avec la première activité
     setInterval(rotateActivity, 20000); // Changer toutes les 20 secondes
   } catch (error) {
-    console.log(color('red')(`${times} [ERROR] Erreur lors de la préparation du bot : ${error.message}`));
+    console.log(chalk.red(`${times} [ERROR] Erreur lors de la préparation du bot : ${error.message}`));
   }
 });
 
@@ -100,7 +100,7 @@ client.on('disconnect', () => {
   const second = now.getSeconds();
   const times = `[${hour}:${minute}:${second}]`;
 
-  console.log(color('red')(`${times} [ERROR] Le bot a été déconnecté ou a rencontré une erreur`));
+  console.log(chalk.red(`${times} [ERROR] Le bot a été déconnecté ou a rencontré une erreur`));
 });
 
 // Lancer le bot
