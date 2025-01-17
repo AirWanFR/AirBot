@@ -36,12 +36,18 @@ let currentActivityIndex = 0;
 // Fonction pour changer l'activité cycliquement
 function rotateActivity() {
   const activity = activities[currentActivityIndex];
-  const channel = client.channels.cache.get(CHANNEL_LOG); 
   client.user.setPresence({
     status: 'online', // Statut du bot
     activities: [activity], // Activité actuelle
   });
-  channel.send(`[INFO] Activité mise à jour : ${activity.name}`);
+
+  // Log de l'activité dans le canal de logs (s'il existe)
+  const channel = client.channels.cache.get(CHANNEL_LOG);
+  if (channel) {
+    channel.send(`🔄 [INFO] Activité mise à jour : **${activity.name}**`);
+  } else {
+    console.log('❌ Canal de log introuvable pour l\'activité');
+  }
 
   // Passer à l'activité suivante
   currentActivityIndex = (currentActivityIndex + 1) % activities.length;
@@ -59,16 +65,16 @@ client.on('ready', () => {
   console.log(times + '[INFO] Connecté sur ' + client.user.username + '#' + client.user.discriminator);
 
   // Envoie un message dans le canal de log
-  const channel = client.channels.cache.get(CHANNEL_LOG); 
+  const channel = client.channels.cache.get(CHANNEL_LOG);
   if (channel) {
     channel.send(times + '🚀 Le bot est en ligne et prêt !');
   } else {
-    console.log('❌ Canal non trouvé !');
+    console.log('❌ Canal de log introuvable lors du démarrage');
   }
 
-  // Lancer la rotation des activités toutes les 10 secondes
+  // Lancer la rotation des activités toutes les 20 secondes
   rotateActivity(); // Initialiser avec la première activité
-  setInterval(rotateActivity, 20000); // Changer toutes les 10 secondes
+  setInterval(rotateActivity, 20000); // Changer toutes les 20 secondes
 });
 
 // Gérer les messages
