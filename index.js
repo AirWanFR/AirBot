@@ -36,6 +36,7 @@ let currentActivityIndex = 0;
 // Fonction pour changer l'activité cycliquement
 function rotateActivity() {
   const activity = activities[currentActivityIndex];
+  const channel = client.channels.cache.get(CHANNEL_LOG); 
   client.user.setPresence({
     status: 'online', // Statut du bot
     activities: [activity], // Activité actuelle
