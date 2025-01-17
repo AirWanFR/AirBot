@@ -75,7 +75,7 @@ const messages = [
     clc.yellow(`${getCurrentTime()}`) + clc.green(` [LOADING]`) + ` Chargement des chansons de Freddy... Pourquoi la mélodie fait-elle si peur ?`,
     clc.yellow(`${getCurrentTime()}`) + clc.magenta(` [FUN]`) + ` Bienvenue au Freddy Fazbear's Pizza, où la magie prend vie. Ne reste pas trop tard.`,
     clc.yellow(`${getCurrentTime()}`) + clc.red(` [WARNING]`) + ` Le pouvoir commence à diminuer. Les lumières vacillent légèrement.`,
-    clc.yellow(`${getCurrentTime()}`) + clc.green(` [OK]`) + ` Connecté sur ${client.user?.username ?? "BOT"}#${client.user?.discriminator ?? "0000"}. Évitez de croiser les animatroniques.`
+    clc.yellow(`${getCurrentTime()}`) + clc.green(` [OK]`) + ` Connecté sur ${client.user.username}#${client.user.discriminator}. Évitez de croiser les animatroniques.`
 ];
 
 
