@@ -63,8 +63,8 @@ client.on('ready', () => {
   const times = `[${hour}:${minute}:${second}]`;
 
   try {
-    console.log(clc.green(`${times} [OK] Connexion à l'API Discord.js effectuée`));
-    console.log(clc.green(`${times} [INFO] Connecté sur ${client.user.username}#${client.user.discriminator}`));
+    console.log(clc.green(`${times} [OK]') + 'Connexion à l'API Discord.js effectuée`);
+    console.log(clc.green(`${times} [INFO]') + 'Connecté sur ${client.user.username}#${client.user.discriminator}`);
 
     // Envoie un message dans le canal de log
     const channel = client.channels.cache.get(CHANNEL_LOG);
