@@ -60,7 +60,7 @@ const getCurrentTime = () => {
     const minute = now.getMinutes();
     const second = now.getSeconds();
     const times = `[${hour}:${minute}:${second}]`;
-    return ${times};
+    return (`${times}`);
 };
 
 // Liste des messages
