@@ -10,11 +10,11 @@ module.exports = {
     const exampleEmbed = new EmbedBuilder()
       .setColor(0x0099FF)
       .setTitle('Bienvenue dans le monde d\'Airwan!')
-      .setURL('https://discord.js.org/')
+      .setURL('https://discord.gg/vbGvefyQx9')
       .setAuthor({
         name: user.username, 
         iconURL: user.displayAvatarURL(), // Avatar de l'utilisateur
-        url: 'https://discord.js.org'
+        url: 'https://discord.gg/vbGvefyQx9'
       })
       .setDescription(`Hello ${user.username}, voici un exemple d'embed personnalisé.`)
       .setThumbnail(user.displayAvatarURL())  // Utilisation de l'avatar de l'utilisateur
