@@ -40,7 +40,7 @@ function rotateActivity() {
     status: 'online', // Statut du bot
     activities: [activity], // Activité actuelle
   });
-  console.log(`[INFO] Activité mise à jour : ${activity.name}`);
+  channel.send(`[INFO] Activité mise à jour : ${activity.name}`);
 
   // Passer à l'activité suivante
   currentActivityIndex = (currentActivityIndex + 1) % activities.length;
@@ -60,14 +60,14 @@ client.on('ready', () => {
   // Envoie un message dans le canal de log
   const channel = client.channels.cache.get(CHANNEL_LOG); 
   if (channel) {
-    channel.send('🚀 Le bot est en ligne et prêt !');
+    channel.send(times + '🚀 Le bot est en ligne et prêt !');
   } else {
     console.log('❌ Canal non trouvé !');
   }
 
   // Lancer la rotation des activités toutes les 10 secondes
   rotateActivity(); // Initialiser avec la première activité
-  setInterval(rotateActivity, 10000); // Changer toutes les 10 secondes
+  setInterval(rotateActivity, 20000); // Changer toutes les 10 secondes
 });
 
 // Gérer les messages
