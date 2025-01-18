@@ -52,10 +52,12 @@ module.exports = {
       return ['◀️', '▶️'].includes(reaction.emoji.name) && !user.bot;
     };
 
-    // Collecte des réactions
+    // Créer un collector de réactions
     const collector = msg.createReactionCollector({ filter, time: 60000 });
 
     let currentPage = 0;
+
+    // Lorsque une réaction est collectée
     collector.on('collect', async (reaction, user) => {
       // Enlever la réaction après qu'elle ait été collectée
       await reaction.users.remove(user);
