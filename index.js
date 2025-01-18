@@ -27,10 +27,20 @@ fs.readdirSync(commandsPath).forEach((file) => {
 // Gérer les événements lorsque le bot est prêt
 client.on('ready', () => {
   console.log(clc.green(`[INFO] Le bot est connecté et prêt !`));
+
+  // Configurer l'activité par défaut du bot
   client.user.setPresence({
     status: 'online',  // Définir le statut du bot
     activities: [{ name: 'Attendre des commandes...', type: 0 }],
   });
+
+  // Envoi d'un message de log dans le canal de log
+  const channel = client.channels.cache.get(CHANNEL_LOG);
+  if (channel) {
+    channel.send(`\`\`\`css\nLe bot est maintenant en ligne et prêt à recevoir des commandes.\n\`\`\``);
+  } else {
+    console.log(clc.red('❌ Canal de log introuvable.'));
+  }
 });
 
 // Gérer les messages
