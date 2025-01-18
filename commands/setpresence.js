@@ -25,7 +25,8 @@ module.exports = {
     };
 
     // Vérifier si le type d'activité est valide
-    if (!validTypes[activityType]) {
+    const validActivityTypes = [0, 2, 3, 5];
+    if (!validActivityTypes.includes(validTypes[activityType])) {
       return message.reply('Type d\'activité invalide. Veuillez utiliser `play`, `listen`, `watch` ou `compete`.');
     }
 
