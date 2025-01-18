@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
-  name: '!setactivity',
+  name: 'setactivity',
   aliases: ['sa', 'userinfo'],
   description: 'Change l\'activité du bot.',
   async execute(message, args) {
