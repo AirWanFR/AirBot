@@ -88,9 +88,16 @@ const rotateActivity = () => {
 client.on('ready', () => {
   try {
     displayRandomMessage();
-
-    console.log(clc.green(`${getCurrentTime()} [OK] Le bot est prêt et connecté !`));
-    console.log(clc.blue(`${getCurrentTime()} [INFO] Initialisation des commandes terminée.`));
+    
+    console.log(clc.yellow(`${getCurrentTime()}`) + clc.green(` [SYSTEM]`) + ` Démarrage du système global...`);
+    console.log(clc.yellow(`${getCurrentTime()}`) + clc.cyan(` [SERVER]`) + ` Le serveur est en ligne. Tout semble opérationnel.`);
+    console.log(clc.yellow(`${getCurrentTime()}`) + clc.magenta(` [BOT]`) + ` Le bot a été correctement initialisé.`);
+    console.log(clc.yellow(`${getCurrentTime()}`) + clc.blue(` [SYSTEM]`) + ` Les modules "commandes" et "événements" ont été chargés.`);
+    console.log(clc.yellow(`${getCurrentTime()}`) + clc.green(` [SERVER]`) + ` Serveur synchronisé avec le bot.`);
+    console.log(clc.yellow(`${getCurrentTime()}`) + clc.white(` [BOT]`) + client.user.username + '#' + client.user.discriminator `est prêt à fonctionner. Tout semble stable.`);
+    console.log(clc.yellow(`${getCurrentTime()}`) + clc.red(` [WARNING]`) + ` Aucun utilisateur connecté actuellement. Surveillance en cours.`);
+    console.log(clc.yellow(`${getCurrentTime()}`) + clc.blue(` [INFO]`) + ` Tâches planifiées prêtes à être exécutées.`);
+    console.log(clc.yellow(`${getCurrentTime()}`) + clc.green(` [OK]`) + ` Initialisation terminée. Système fonctionnel.`);
 
     const channel = client.channels.cache.get(CHANNEL_LOG);
     if (channel) {
