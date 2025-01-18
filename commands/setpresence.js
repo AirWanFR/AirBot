@@ -13,14 +13,14 @@ module.exports = {
     }
 
     // Extraire le type d'activité et le message d'activité
-    const activityType = args[0].toLowerCase();
-    const activityMessage = args.slice(1).join(' '); // Si le message contient des espaces, tout sera pris après le premier argument
+    const activityType = args[0].toLowerCase(); // Premier argument : type d'activité
+    const activityMessage = args.slice(1).join(' '); // Rejoindre le reste des arguments en une seule chaîne
 
     // Définir les types d'activités valides
     const validTypes = {
-      play: 0, // "Joue à"
+      play: 0,  // "Joue à"
       listen: 2, // "Écoute"
-      watch: 3, // "Regarde"
+      watch: 3,  // "Regarde"
       compete: 5 // "En compétition"
     };
 
@@ -33,9 +33,9 @@ module.exports = {
     // Mettre à jour l'activité du bot
     try {
       await message.client.user.setPresence({
-        status: 'online', // Statut du bot
+        status: 'online',  // Statut du bot
         activities: [{
-          name: activityMessage,  // Activité donnée par l'utilisateur
+          name: activityMessage,  // Message de l'activité fourni par l'utilisateur
           type: activityTypeId,   // Type d'activité
         }]
       });
