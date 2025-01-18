@@ -59,6 +59,8 @@ module.exports = {
 
     // Lorsque une réaction est collectée
     collector.on('collect', async (reaction, user) => {
+      console.log('Réaction collectée:', reaction.emoji.name); // Débogage pour vérifier la réaction collectée
+
       // Enlever la réaction après qu'elle ait été collectée
       await reaction.users.remove(user);
 
@@ -81,6 +83,7 @@ module.exports = {
 
     // Lorsque le temps est écoulé, arrêter la collecte
     collector.on('end', async () => {
+      console.log('Collector terminé, suppression des réactions'); // Débogage pour vérifier que la collecte se termine
       await msg.reactions.removeAll(); // Supprimer toutes les réactions après la fin de la collecte
     });
   },
