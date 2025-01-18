@@ -37,7 +37,6 @@ module.exports = {
     // Mettre à jour l'activité du bot
     try {
       await message.client.user.setPresence({
-        status: 'online',  // Le statut du bot (en ligne)
         activities: [{
           name: activityMessage,  // Message d'activité fourni
           type: validTypes[activityType],  // Le type d'activité (numérique)
