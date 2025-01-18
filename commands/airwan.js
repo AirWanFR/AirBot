@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
-  name: '!airwan',
+  name: 'airwan',
   execute(message) {
     // Extraire l'utilisateur qui a envoyé la commande
     const user = message.author;
