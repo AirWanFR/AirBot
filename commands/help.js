@@ -4,7 +4,7 @@ module.exports = {
   name: 'help',
   description: 'Affiche la liste des commandes disponibles avec pagination.',
   async execute(message) {
-    const PREFIX = '!'; // Définir ou récupérer ton préfixe ici
+    const PREFIX = process.env.PREFIX || 'aw!';
 
     // Liste des commandes
     const commands = [
