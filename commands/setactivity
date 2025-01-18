@@ -2,7 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
   name: '!setactivity',
-  aliases: '!sa',
+  aliases: ['sa', 'userinfo'],
   description: 'Change l\'activité du bot.',
   async execute(message, args) {
     // Vérifier si l'utilisateur a les autorisations nécessaires (ici, on suppose qu'il s'agit d'un administrateur)
