@@ -1,6 +1,7 @@
 module.exports = {
-  name: '!status',
+  name: 'status',
   execute(message) {
-    message.reply('✅ Le bot est en ligne !');
+    const ping = Date.now() - message.createdTimestamp;
+    message.reply('✅ Le bot est en ligne ! Le ping du bot est de ${ping}ms.');
   },
 };
