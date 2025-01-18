@@ -14,6 +14,9 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
 });
 
+// Définir un préfixe modifiable
+let PREFIX = 'aw!';
+
 // Commandes
 client.commands = new Map();
 
@@ -24,34 +27,33 @@ fs.readdirSync(commandsPath).forEach((file) => {
   client.commands.set(command.name, command.execute);
 });
 
-// Supprimer la rotation des activités
-
 // Fonction pour obtenir l'heure actuelle
 const getCurrentTime = () => {
-    const now = new Date();
-    const hour = now.getHours();
-    const minute = now.getMinutes();
-    const second = now.getSeconds();
-    return `[${hour}:${minute}:${second}]`;
+  const now = new Date();
+  const hour = now.getHours();
+  const minute = now.getMinutes();
+  const second = now.getSeconds();
+  const times = `[${hour}:${minute}:${second}]`;
+  return (`${times}`);
 };
 
-// Liste des messages
-const messages = [
-  clc.yellow(`${getCurrentTime()}`) + clc.green(` [OK]`) + ` Le système de sécurité est en ligne. Espérons que rien ne sortira des coulisses cette nuit...`,
-  clc.yellow(`${getCurrentTime()}`) + clc.red(` [WARNING]`) + ` Attention : Freddy a été aperçu près de la scène.`,
-  clc.yellow(`${getCurrentTime()}`) + clc.blue(` [INFO]`) + ` Les caméras fonctionnent... mais qui surveille vraiment ?`,
-  clc.yellow(`${getCurrentTime()}`) + clc.magenta(` [SYSTEM]`) + ` Activation des animatroniques pour le mode veille... ou pas.`,
-  clc.yellow(`${getCurrentTime()}`) + clc.cyan(` [DEBUG]`) + ` Vérification de la batterie des portes : 99%. Ça devrait suffire... non ?`,
-  clc.yellow(`${getCurrentTime()}`) + clc.white(` [EVENT]`) + ` Foxy semble impatient. Pas de sprint pour l'instant.`,
-  clc.yellow(`${getCurrentTime()}`) + clc.green(` [LOADING]`) + ` Chargement des chansons de Freddy... Pourquoi la mélodie fait-elle si peur ?`,
-  clc.yellow(`${getCurrentTime()}`) + clc.magenta(` [FUN]`) + ` Bienvenue au Freddy Fazbear's Pizza, où la magie prend vie. Ne reste pas trop tard.`,
-];
+// Gérer les messages
+client.on('messageCreate', (message) => {
+  // Ignorer les messages provenant du bot
+  if (message.author.bot) return;
 
-// Fonction pour afficher un message aléatoire
-const displayRandomMessage = () => {
-    const randomIndex = Math.floor(Math.random() * messages.length);
-    console.log(messages[randomIndex]);
-};
+  // Vérifier si le message commence par le préfixe modifiable
+  if (!message.content.startsWith(PREFIX)) return;
+
+  // Extraire la commande (en enlevant le préfixe)
+  const commandName = message.content.slice(PREFIX.length).split(' ')[0].toLowerCase();
+
+  // Vérifier si la commande existe dans les commandes du bot
+  if (client.commands.has(commandName)) {
+    // Exécuter la commande
+    client.commands.get(commandName)(message);
+  }
+});
 
 // Quand le bot est prêt
 client.on('ready', () => {
@@ -62,7 +64,6 @@ client.on('ready', () => {
   const times = `[${hour}:${minute}:${second}]`;
 
   try {
-    displayRandomMessage();
     console.log(clc.yellow(`${times}`) + clc.green(` [OK]`) + ` Connexion à l'API Discord.js effectuée`);
     console.log(clc.yellow(`${times}`) + clc.green(` [SERVER]`) + ` Initialisation du serveur en cours...`);
     console.log(clc.yellow(`${times}`) + clc.blue(` [SERVER]`) + ` Serveur opérationnel. Les systèmes sont prêts.`);
@@ -79,32 +80,9 @@ client.on('ready', () => {
     } else {
       console.log(clc.red('❌ Canal de log introuvable lors du démarrage'));
     }
-
   } catch (error) {
     console.log(clc.red(`${times} [ERROR] Erreur lors de la préparation du bot : ${error.message}`));
   }
-});
-
-// Gérer les messages
-client.on('messageCreate', (message) => {
-  if (message.author.bot) return;
-
-  const commandName = message.content.split(' ')[0].toLowerCase(); // Commande de base sans le préfixe
-  if (client.commands.has(commandName)) {
-    const args = message.content.split(' ').slice(1);  // Récupérer les arguments après la commande
-    client.commands.get(commandName)(message, args);
-  }
-});
-
-// Quand le bot se déconnecte
-client.on('disconnect', () => {
-  const now = new Date();
-  const hour = now.getHours();
-  const minute = now.getMinutes();
-  const second = now.getSeconds();
-  const times = `[${hour}:${minute}:${second}]`;
-
-  console.log(clc.red(`${times} [ERROR] Le bot a été déconnecté ou a rencontré une erreur`));
 });
 
 // Lancer le bot
