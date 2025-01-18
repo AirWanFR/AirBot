@@ -1,5 +1,5 @@
 module.exports = {
-  name: '!presence',
+  name: 'presence',
   execute(message) {
     message.client.user.setPresence({
       status: 'online',
