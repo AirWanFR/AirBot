@@ -1,21 +1,18 @@
-// Charger les bibliothèques nécessaires
-require('dotenv').config();
+require('dotenv').config(); // Charger les variables d'environnement du fichier .env
 const { Client, GatewayIntentBits } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-const clc = require('cli-color'); // Importation de `cli-color`
+const clc = require('cli-color');
 
 // Charger les variables d'environnement
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 const CHANNEL_LOG = process.env.CHANNEL_LOG;
+let PREFIX = process.env.PREFIX || 'aw!'; // Charger le préfixe depuis .env, sinon utiliser 'aw!' par défaut
 
 // Configurer le bot Discord
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
 });
-
-// Définir un préfixe modifiable
-let PREFIX = 'aw!';
 
 // Commandes
 client.commands = new Map();
@@ -25,34 +22,6 @@ const commandsPath = path.join(__dirname, 'commands');
 fs.readdirSync(commandsPath).forEach((file) => {
   const command = require(path.join(commandsPath, file));
   client.commands.set(command.name, command.execute);
-});
-
-// Fonction pour obtenir l'heure actuelle
-const getCurrentTime = () => {
-  const now = new Date();
-  const hour = now.getHours();
-  const minute = now.getMinutes();
-  const second = now.getSeconds();
-  const times = `[${hour}:${minute}:${second}]`;
-  return (`${times}`);
-};
-
-// Gérer les messages
-client.on('messageCreate', (message) => {
-  // Ignorer les messages provenant du bot
-  if (message.author.bot) return;
-
-  // Vérifier si le message commence par le préfixe modifiable
-  if (!message.content.startsWith(PREFIX)) return;
-
-  // Extraire la commande (en enlevant le préfixe)
-  const commandName = message.content.slice(PREFIX.length).split(' ')[0].toLowerCase();
-
-  // Vérifier si la commande existe dans les commandes du bot
-  if (client.commands.has(commandName)) {
-    // Exécuter la commande
-    client.commands.get(commandName)(message);
-  }
 });
 
 // Quand le bot est prêt
@@ -70,8 +39,6 @@ client.on('ready', () => {
     console.log(clc.yellow(`${times}`) + clc.cyan(` [BOT]`) + ` Démarrage du bot... Activation des modules.`);
     console.log(clc.yellow(`${times}`) + clc.green(` [BOT]`) + ` Connecté sur ${client.user.username}#${client.user.discriminator}.`);
     console.log(clc.yellow(`${times}`) + clc.magenta(` [BOT]`) + ` Chargement des commandes terminées.`);
-    console.log(clc.yellow(`${times}`) + clc.red(` [SERVER]`) + ` Attention : fluctuations détectées dans les logs du démarrage. Tout est (probablement) sous contrôle.`);
-    console.log(clc.yellow(`${times}`) + clc.green(` [OK]`) + ` Le serveur et le bot sont prêts à fonctionner.`);
 
     // Envoie un message dans le canal de log
     const channel = client.channels.cache.get(CHANNEL_LOG);
@@ -83,6 +50,32 @@ client.on('ready', () => {
   } catch (error) {
     console.log(clc.red(`${times} [ERROR] Erreur lors de la préparation du bot : ${error.message}`));
   }
+});
+
+// Gérer les messages
+client.on('messageCreate', (message) => {
+  if (message.author.bot) return;
+
+  // Vérifier si le message commence par le préfixe actuel
+  if (message.content.startsWith(PREFIX)) {
+    const commandName = message.content.slice(PREFIX.length).trim().split(' ')[0].toLowerCase();
+    
+    // Exécuter la commande correspondante si elle existe
+    if (client.commands.has(commandName)) {
+      client.commands.get(commandName)(message, message.content.slice(PREFIX.length).trim().split(' '));
+    }
+  }
+});
+
+// Quand le bot se déconnecte
+client.on('disconnect', () => {
+  const now = new Date();
+  const hour = now.getHours();
+  const minute = now.getMinutes();
+  const second = now.getSeconds();
+  const times = `[${hour}:${minute}:${second}]`;
+
+  console.log(clc.red(`${times} [ERROR] Le bot a été déconnecté ou a rencontré une erreur`));
 });
 
 // Lancer le bot
