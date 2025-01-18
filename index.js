@@ -1,19 +1,13 @@
 // Charger les bibliothèques nécessaires
 require('dotenv').config();
 const { Client, GatewayIntentBits } = require('discord.js');
-const clc = require('cli-color'); // Importation de `cli-color`
 const fs = require('fs');
 const path = require('path');
+const clc = require('cli-color'); // Importation de `cli-color`
 
 // Charger les variables d'environnement
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 const CHANNEL_LOG = process.env.CHANNEL_LOG;
-
-// Sécurisation des variables d'environnement
-if (!DISCORD_TOKEN || !CHANNEL_LOG) {
-  console.error('❌ Les variables d\'environnement DISCORD_TOKEN ou CHANNEL_LOG ne sont pas définies.');
-  process.exit(1);
-}
 
 // Configurer le bot Discord
 const client = new Client({
@@ -30,13 +24,15 @@ fs.readdirSync(commandsPath).forEach((file) => {
   client.commands.set(command.name, command.execute);
 });
 
+// Supprimer la rotation des activités
+
 // Fonction pour obtenir l'heure actuelle
 const getCurrentTime = () => {
-  const now = new Date();
-  const hour = now.getHours().toString().padStart(2, '0');
-  const minute = now.getMinutes().toString().padStart(2, '0');
-  const second = now.getSeconds().toString().padStart(2, '0');
-  return `[${hour}:${minute}:${second}]`;
+    const now = new Date();
+    const hour = now.getHours();
+    const minute = now.getMinutes();
+    const second = now.getSeconds();
+    return `[${hour}:${minute}:${second}]`;
 };
 
 // Liste des messages
@@ -53,76 +49,39 @@ const messages = [
 
 // Fonction pour afficher un message aléatoire
 const displayRandomMessage = () => {
-  if (messages.length === 0) {
-    console.log(clc.red('❌ Aucun message à afficher.'));
-    return;
-  }
-
-  const randomIndex = Math.floor(Math.random() * messages.length);
-  console.log(messages[randomIndex]);
-};
-
-// Définir les activités à changer
-const activities = [
-  { name: 'Escanor', type: 2, url: 'https://twitch.tv/erwancbr' }, // Écoute "Escanor"
-  { name: 'au soleil ☀️', type: 0 }, // Joue à "au soleil"
-  { name: 'les messages', type: 3 }, // Regarde "les messages"
-  { name: 'la paix dans le monde 🌍', type: 5 }, // En compétition sur "la paix dans le monde"
-];
-
-let currentActivityIndex = 0;
-
-// Fonction pour changer l'activité cycliquement
-const rotateActivity = () => {
-  const activity = activities[currentActivityIndex];
-  client.user.setPresence({
-    status: 'online', // Statut du bot
-    activities: [activity], // Activité actuelle
-  });
-
-  const channel = client.channels.cache.get(CHANNEL_LOG);
-  if (!channel) {
-    console.error('❌ Canal de log introuvable.');
-    return;
-  }
-
-  if (!channel.permissionsFor(client.user).has('SEND_MESSAGES')) {
-    console.error('❌ Le bot n\'a pas la permission d\'envoyer des messages dans le canal de log.');
-    return;
-  }
-
-  channel.send(`\`\`\`fix\n🔄 [INFO] Activité mise à jour : **${activity.name}**\n\`\`\``);
-
-  currentActivityIndex = (currentActivityIndex + 1) % activities.length;
+    const randomIndex = Math.floor(Math.random() * messages.length);
+    console.log(messages[randomIndex]);
 };
 
 // Quand le bot est prêt
 client.on('ready', () => {
+  const now = new Date();
+  const hour = now.getHours();
+  const minute = now.getMinutes();
+  const second = now.getSeconds();
+  const times = `[${hour}:${minute}:${second}]`;
+
   try {
     displayRandomMessage();
+    console.log(clc.yellow(`${times}`) + clc.green(` [OK]`) + ` Connexion à l'API Discord.js effectuée`);
+    console.log(clc.yellow(`${times}`) + clc.green(` [SERVER]`) + ` Initialisation du serveur en cours...`);
+    console.log(clc.yellow(`${times}`) + clc.blue(` [SERVER]`) + ` Serveur opérationnel. Les systèmes sont prêts.`);
+    console.log(clc.yellow(`${times}`) + clc.cyan(` [BOT]`) + ` Démarrage du bot... Activation des modules.`);
+    console.log(clc.yellow(`${times}`) + clc.green(` [BOT]`) + ` Connecté sur ${client.user.username}#${client.user.discriminator}.`);
+    console.log(clc.yellow(`${times}`) + clc.magenta(` [BOT]`) + ` Chargement des commandes terminées.`);
+    console.log(clc.yellow(`${times}`) + clc.red(` [SERVER]`) + ` Attention : fluctuations détectées dans les logs du démarrage. Tout est (probablement) sous contrôle.`);
+    console.log(clc.yellow(`${times}`) + clc.green(` [OK]`) + ` Le serveur et le bot sont prêts à fonctionner.`);
 
-    console.log(clc.yellow(`${getCurrentTime()}`) + clc.green(` [SYSTEM]`) + ` Démarrage du système global...`);
-    console.log(clc.yellow(`${getCurrentTime()}`) + clc.cyan(` [SERVER]`) + ` Le serveur est en ligne. Tout semble opérationnel.`);
-    console.log(clc.yellow(`${getCurrentTime()}`) + clc.magenta(` [BOT]`) + ` Le bot a été correctement initialisé.`);
-    console.log(clc.yellow(`${getCurrentTime()}`) + clc.blue(` [SYSTEM]`) + ` Les modules "commandes" et "événements" ont été chargés.`);
-    console.log(clc.yellow(`${getCurrentTime()}`) + clc.green(` [SERVER]`) + ` Serveur synchronisé avec le bot.`);
-    console.log(clc.yellow(`${getCurrentTime()}`) + clc.green(` [BOT]`) + client.user.username + '#' + client.user.discriminator + ` est prêt à fonctionner. Tout semble stable.`);
-    console.log(clc.yellow(`${getCurrentTime()}`) + clc.red(` [WARNING]`) + ` Aucun utilisateur connecté actuellement. Surveillance en cours.`);
-    console.log(clc.yellow(`${getCurrentTime()}`) + clc.blue(` [INFO]`) + ` Tâches planifiées prêtes à être exécutées.`);
-    console.log(clc.yellow(`${getCurrentTime()}`) + clc.green(` [OK]`) + ` Initialisation terminée. Système fonctionnel.`);
-
+    // Envoie un message dans le canal de log
     const channel = client.channels.cache.get(CHANNEL_LOG);
     if (channel) {
-      channel.send(`\`\`\`css\n${getCurrentTime()} 🚀 Le bot est en ligne et prêt !\n\`\`\``);
+      channel.send(`\`\`\`css\n${times} 🚀 Le bot est en ligne et prêt !\n\`\`\``);
     } else {
-      console.error('❌ Canal de log introuvable lors du démarrage.');
+      console.log(clc.red('❌ Canal de log introuvable lors du démarrage'));
     }
 
-    // Démarrer la rotation des activités toutes les 20 secondes
-    const ACTIVITY_ROTATION_INTERVAL = 20000; // Intervalle en millisecondes (20 secondes)
-    setInterval(rotateActivity, ACTIVITY_ROTATION_INTERVAL);
   } catch (error) {
-    console.error(clc.red(`${getCurrentTime()} [ERROR] Une erreur s'est produite : ${error.message}`));
+    console.log(clc.red(`${times} [ERROR] Erreur lors de la préparation du bot : ${error.message}`));
   }
 });
 
@@ -130,26 +89,22 @@ client.on('ready', () => {
 client.on('messageCreate', (message) => {
   if (message.author.bot) return;
 
-  const commandName = message.content.split(' ')[0].toLowerCase();
+  const commandName = message.content.split(' ')[0].toLowerCase(); // Commande de base sans le préfixe
   if (client.commands.has(commandName)) {
-    client.commands.get(commandName)(message);
-  } else {
-    message.channel.send("❌ Commande inconnue. Tapez `!help` pour voir les commandes disponibles.");
+    const args = message.content.split(' ').slice(1);  // Récupérer les arguments après la commande
+    client.commands.get(commandName)(message, args);
   }
 });
 
 // Quand le bot se déconnecte
 client.on('disconnect', () => {
-  console.log(clc.red(`${getCurrentTime()} [ERROR] Le bot a été déconnecté.`));
-});
+  const now = new Date();
+  const hour = now.getHours();
+  const minute = now.getMinutes();
+  const second = now.getSeconds();
+  const times = `[${hour}:${minute}:${second}]`;
 
-// Gestion des erreurs non capturées
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('❌ Promise non gérée :', promise, 'raison:', reason);
-});
-
-process.on('uncaughtException', (err) => {
-  console.error('❌ Exception non capturée:', err);
+  console.log(clc.red(`${times} [ERROR] Le bot a été déconnecté ou a rencontré une erreur`));
 });
 
 // Lancer le bot
