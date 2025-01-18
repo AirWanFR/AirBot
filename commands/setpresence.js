@@ -1,6 +1,6 @@
 module.exports = {
   name: 'setpresence',
-  description: 'Change la présence du bot avec le type d\'activité et le message donné.',
+  description: 'Change la présence du bot avec un type d\'activité et un message.',
   async execute(message, args) {
     // Vérifier si l'utilisateur a les autorisations nécessaires (facultatif, ici administrateur)
     if (!message.member.permissions.has('ADMINISTRATOR')) {
@@ -18,10 +18,10 @@ module.exports = {
 
     // Définir les types d'activités valides
     const validTypes = {
-      play: 0,  // "Joue à"
-      listen: 2, // "Écoute"
-      watch: 3,  // "Regarde"
-      compete: 5 // "En compétition"
+      play: 0,   // "Joue à"
+      listen: 2,  // "Écoute"
+      watch: 3,   // "Regarde"
+      compete: 5  // "En compétition"
     };
 
     // Vérifier si le type d'activité est valide
@@ -29,10 +29,14 @@ module.exports = {
       return message.reply('Type d\'activité invalide. Veuillez utiliser `play`, `listen`, `watch` ou `compete`.');
     }
 
+    // Affichage pour diagnostiquer le message et les arguments
+    console.log(`Type d'activité : ${activityType}`);
+    console.log(`Message d'activité : "${activityMessage}"`);
+
     // Mettre à jour l'activité du bot
     try {
       await message.client.user.setPresence({
-        status: 'online',  // Le statut du bot (ici, toujours en ligne)
+        status: 'online',  // Le statut du bot (en ligne)
         activities: [{
           name: activityMessage,  // Message d'activité fourni
           type: validTypes[activityType],  // Le type d'activité (numérique)
