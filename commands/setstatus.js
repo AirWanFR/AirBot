@@ -1,5 +1,5 @@
 module.exports = {
-  name: '!setstatus',
+  name: 'setstatus',
   execute(message) {
     // Extraire le statut fourni par l'utilisateur
     const args = message.content.split(' ');
