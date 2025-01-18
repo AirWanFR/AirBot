@@ -3,7 +3,7 @@ const clc = require('cli-color'); // Importation de `cli-color`
 
 
 module.exports = {
-  name: '!shutdown',
+  name: 'shutdown',
   execute(message) {
     // Créer l'embed avec la couleur et le texte
     const embed = new EmbedBuilder()
