@@ -94,7 +94,7 @@ client.on('ready', () => {
     console.log(clc.yellow(`${getCurrentTime()}`) + clc.magenta(` [BOT]`) + ` Le bot a été correctement initialisé.`);
     console.log(clc.yellow(`${getCurrentTime()}`) + clc.blue(` [SYSTEM]`) + ` Les modules "commandes" et "événements" ont été chargés.`);
     console.log(clc.yellow(`${getCurrentTime()}`) + clc.green(` [SERVER]`) + ` Serveur synchronisé avec le bot.`);
-    console.log(clc.yellow(`${getCurrentTime()}`) + clc.white(` [BOT]`) + client.user.username + '#' + client.user.discriminator `est prêt à fonctionner. Tout semble stable.`);
+    console.log(clc.yellow(`${getCurrentTime()}`) + clc.green(` [BOT]`) + client.user.username + '#' + client.user.discriminator + `est prêt à fonctionner. Tout semble stable.`);
     console.log(clc.yellow(`${getCurrentTime()}`) + clc.red(` [WARNING]`) + ` Aucun utilisateur connecté actuellement. Surveillance en cours.`);
     console.log(clc.yellow(`${getCurrentTime()}`) + clc.blue(` [INFO]`) + ` Tâches planifiées prêtes à être exécutées.`);
     console.log(clc.yellow(`${getCurrentTime()}`) + clc.green(` [OK]`) + ` Initialisation terminée. Système fonctionnel.`);
