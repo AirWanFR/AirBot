@@ -9,6 +9,12 @@ const path = require('path');
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 const CHANNEL_LOG = process.env.CHANNEL_LOG;
 
+// Sécurisation des variables d'environnement
+if (!DISCORD_TOKEN || !CHANNEL_LOG) {
+  console.error('❌ Les variables d\'environnement DISCORD_TOKEN ou CHANNEL_LOG ne sont pas définies.');
+  process.exit(1);
+}
+
 // Configurer le bot Discord
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
@@ -75,11 +81,17 @@ const rotateActivity = () => {
   });
 
   const channel = client.channels.cache.get(CHANNEL_LOG);
-  if (channel) {
-    channel.send(`\`\`\`fix\n🔄 [INFO] Activité mise à jour : **${activity.name}**\n\`\`\``);
-  } else {
-    console.log(clc.yellow('❌ Canal de log introuvable pour l\'activité.'));
+  if (!channel) {
+    console.error('❌ Canal de log introuvable.');
+    return;
   }
+
+  if (!channel.permissionsFor(client.user).has('SEND_MESSAGES')) {
+    console.error('❌ Le bot n\'a pas la permission d\'envoyer des messages dans le canal de log.');
+    return;
+  }
+
+  channel.send(`\`\`\`fix\n🔄 [INFO] Activité mise à jour : **${activity.name}**\n\`\`\``);
 
   currentActivityIndex = (currentActivityIndex + 1) % activities.length;
 };
@@ -88,13 +100,13 @@ const rotateActivity = () => {
 client.on('ready', () => {
   try {
     displayRandomMessage();
-    
+
     console.log(clc.yellow(`${getCurrentTime()}`) + clc.green(` [SYSTEM]`) + ` Démarrage du système global...`);
     console.log(clc.yellow(`${getCurrentTime()}`) + clc.cyan(` [SERVER]`) + ` Le serveur est en ligne. Tout semble opérationnel.`);
     console.log(clc.yellow(`${getCurrentTime()}`) + clc.magenta(` [BOT]`) + ` Le bot a été correctement initialisé.`);
     console.log(clc.yellow(`${getCurrentTime()}`) + clc.blue(` [SYSTEM]`) + ` Les modules "commandes" et "événements" ont été chargés.`);
     console.log(clc.yellow(`${getCurrentTime()}`) + clc.green(` [SERVER]`) + ` Serveur synchronisé avec le bot.`);
-    console.log(clc.yellow(`${getCurrentTime()}`) + clc.green(` [BOT]`) + client.user.username + '#' + client.user.discriminator + `est prêt à fonctionner. Tout semble stable.`);
+    console.log(clc.yellow(`${getCurrentTime()}`) + clc.green(` [BOT]`) + client.user.username + '#' + client.user.discriminator + ` est prêt à fonctionner. Tout semble stable.`);
     console.log(clc.yellow(`${getCurrentTime()}`) + clc.red(` [WARNING]`) + ` Aucun utilisateur connecté actuellement. Surveillance en cours.`);
     console.log(clc.yellow(`${getCurrentTime()}`) + clc.blue(` [INFO]`) + ` Tâches planifiées prêtes à être exécutées.`);
     console.log(clc.yellow(`${getCurrentTime()}`) + clc.green(` [OK]`) + ` Initialisation terminée. Système fonctionnel.`);
@@ -103,12 +115,12 @@ client.on('ready', () => {
     if (channel) {
       channel.send(`\`\`\`css\n${getCurrentTime()} 🚀 Le bot est en ligne et prêt !\n\`\`\``);
     } else {
-      console.log(clc.red('❌ Canal de log introuvable lors du démarrage.'));
+      console.error('❌ Canal de log introuvable lors du démarrage.');
     }
 
     // Démarrer la rotation des activités toutes les 20 secondes
-    rotateActivity();
-    setInterval(rotateActivity, 20000);
+    const ACTIVITY_ROTATION_INTERVAL = 20000; // Intervalle en millisecondes (20 secondes)
+    setInterval(rotateActivity, ACTIVITY_ROTATION_INTERVAL);
   } catch (error) {
     console.error(clc.red(`${getCurrentTime()} [ERROR] Une erreur s'est produite : ${error.message}`));
   }
@@ -121,12 +133,23 @@ client.on('messageCreate', (message) => {
   const commandName = message.content.split(' ')[0].toLowerCase();
   if (client.commands.has(commandName)) {
     client.commands.get(commandName)(message);
+  } else {
+    message.channel.send("❌ Commande inconnue. Tapez `!help` pour voir les commandes disponibles.");
   }
 });
 
 // Quand le bot se déconnecte
 client.on('disconnect', () => {
   console.log(clc.red(`${getCurrentTime()} [ERROR] Le bot a été déconnecté.`));
+});
+
+// Gestion des erreurs non capturées
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Promise non gérée :', promise, 'raison:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('❌ Exception non capturée:', err);
 });
 
 // Lancer le bot
