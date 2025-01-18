@@ -1,28 +1,26 @@
 const { EmbedBuilder } = require('discord.js');
 
+// Récupérer le préfixe depuis .env
+const PREFIX = process.env.PREFIX || 'aw!';
+
 module.exports = {
-  name: '!help',
-  execute(message) {
-    // Créer l'embed
-    const helpEmbed = new EmbedBuilder()
+  name: 'help',
+  execute(message, args) {
+    // Création de l'embed pour la commande help
+    const exampleEmbed = new EmbedBuilder()
       .setColor(0x0099FF)
       .setTitle('Liste des commandes disponibles')
-      .setDescription('Voici les commandes que vous pouvez utiliser avec le bot.')
+      .setDescription(`Voici les commandes disponibles pour le bot avec le préfixe \`${PREFIX}\`:`)
       .addFields(
-        { name: `${PREFIX}airwan`, value: 'Affiche des informations sur le bot.', inline: false },
-        { name: `${PREFIX}infouser`, value: 'Affiche les informations d\'un utilisateur.', inline: false },
-        { name: `${PREFIX}presence`, value: 'Change la présence du bot.', inline: false },
-        { name: `${PREFIX}setactivity`, value: 'Change l\'activité du bot.', inline: false },
-        { name: `${PREFIX}setstatus`, value: 'Change le statut du bot (online, idle, dnd).', inline: false },
-        { name: `${PREFIX}shutdown`, value: 'Arrête le bot.', inline: false },
-        { name: `${PREFIX}status`, value: 'Affiche l\'état actuel du bot.', inline: false },
-        { name: `${PREFIX}help`, value: 'Affiche cette aide.', inline: false },
-        { name: `${PREFIX}setprefix`, value: 'Modifie le préfixe du bot.', inline: false },
+        { name: `${PREFIX}help`, value: 'Affiche la liste des commandes.' },
+        { name: `${PREFIX}setactivity`, value: 'Change l\'activité du bot.' },
+        { name: `${PREFIX}setstatus`, value: 'Change le statut du bot.' },
+        { name: `${PREFIX}shutdown`, value: 'Éteint le bot.' },
+        // Ajoutez d'autres commandes ici
       )
-      .setFooter({ text: `Commande exécutée par ${message.author.username}`, iconURL: message.author.displayAvatarURL() })
-      .setTimestamp();
+      .setFooter({ text: 'Utilisez le préfixe suivi de la commande' });
 
-    // Envoyer l'embed dans le canal
-    message.channel.send({ embeds: [helpEmbed] });
+    // Envoi de l'embed dans le même canal
+    message.channel.send({ embeds: [exampleEmbed] });
   },
 };
