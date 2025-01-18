@@ -9,7 +9,7 @@ module.exports = {
 
     // Vérifier si les arguments sont suffisants
     if (args.length < 2) {
-      return message.reply('Veuillez spécifier un type d\'activité et un message. Exemple: `!setpresence play "Regarde un film"`.');
+      return message.reply('Veuillez spécifier un type d\'activité et un message. Exemple: `aw!setpresence play "Regarde un film"`.');
     }
 
     // Extraire le type d'activité et le message d'activité
@@ -25,8 +25,7 @@ module.exports = {
     };
 
     // Vérifier si le type d'activité est valide
-    const activityTypeId = validTypes[activityType];
-    if (!activityTypeId) {
+    if (!validTypes[activityType]) {
       return message.reply('Type d\'activité invalide. Veuillez utiliser `play`, `listen`, `watch` ou `compete`.');
     }
 
@@ -36,7 +35,7 @@ module.exports = {
         status: 'online',  // Statut du bot
         activities: [{
           name: activityMessage,  // Message de l'activité fourni par l'utilisateur
-          type: activityTypeId,   // Type d'activité
+          type: validTypes[activityType],   // Type d'activité
         }]
       });
 
