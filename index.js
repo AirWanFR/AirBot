@@ -26,7 +26,7 @@ fs.readdirSync(commandsPath).forEach((file) => {
 
 // Définir les activités à changer
 const activities = [
-  { name: 'Escanor', type: 2, url: 'https://twitch.tv/erwancbr' }, // Écoute "Escanor"
+  { name: 'Escanor', type: 1, url: 'https://twitch.tv/erwancbr' }, // Diffusion en direct
   { name: 'au soleil ☀️', type: 0 }, // Joue à "au soleil"
   { name: 'les messages', type: 3 }, // Regarde "les messages"
   { name: 'la paix dans le monde 🌍', type: 5 }, // En compétition sur "la paix dans le monde"
@@ -34,111 +34,68 @@ const activities = [
 
 let currentActivityIndex = 0;
 
-// Fonction pour changer l'activité cycliquement
+function getCurrentTime() {
+  const now = new Date();
+  return now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+const displayRandomMessage = () => {
+  if (messages.length === 0) {
+    console.log(clc.red(`[ERROR] Aucun message à afficher dans la liste des messages.`));
+    return;
+  }
+  const randomIndex = Math.floor(Math.random() * messages.length);
+  console.log(messages[randomIndex]);
+};
+
 function rotateActivity() {
   const activity = activities[currentActivityIndex];
   client.user.setPresence({
-    status: 'online', // Statut du bot
-    activities: [activity], // Activité actuelle
+    status: 'online',
+    activities: [activity],
   });
 
-  // Log de l'activité dans le canal de logs (s'il existe)
   const channel = client.channels.cache.get(CHANNEL_LOG);
   if (channel) {
-    channel.send(`\`\`\`fix\n🔄 [INFO] Activité mise à jour : **${activity.name}**\n\`\`\``);
+    channel.send(`\`\`\`fix\n🔄 [INFO] Activité mise à jour : ${activity.name}\n\`\`\``);
   } else {
     console.log(clc.yellow('❌ Canal de log introuvable pour l\'activité'));
   }
 
-  // Passer à l'activité suivante
   currentActivityIndex = (currentActivityIndex + 1) % activities.length;
 }
-// Fonction pour obtenir l'heure actuelle
-const getCurrentTime = () => {
-    const now = new Date();
-    const hour = now.getHours();
-    const minute = now.getMinutes();
-    const second = now.getSeconds();
-    const times = `[${hour}:${minute}:${second}]`;
-    return (`${times}`);
-};
 
-// Liste des messages
-const messages = [
-    clc.yellow(`${getCurrentTime()}`) + clc.green(` [OK]`) + ` Le système de sécurité est en ligne. Espérons que rien ne sortira des coulisses cette nuit...`,
-    clc.yellow(`${getCurrentTime()}`) + clc.red(` [WARNING]`) + ` Attention : Freddy a été aperçu près de la scène.`,
-    clc.yellow(`${getCurrentTime()}`) + clc.blue(` [INFO]`) + ` Les caméras fonctionnent... mais qui surveille vraiment ?`,
-    clc.yellow(`${getCurrentTime()}`) + clc.magenta(` [SYSTEM]`) + ` Activation des animatroniques pour le mode veille... ou pas.`,
-    clc.yellow(`${getCurrentTime()}`) + clc.cyan(` [DEBUG]`) + ` Vérification de la batterie des portes : 99%. Ça devrait suffire... non ?`,
-    clc.yellow(`${getCurrentTime()}`) + clc.white(` [EVENT]`) + ` Foxy semble impatient. Pas de sprint pour l'instant.`,
-    clc.yellow(`${getCurrentTime()}`) + clc.green(` [LOADING]`) + ` Chargement des chansons de Freddy... Pourquoi la mélodie fait-elle si peur ?`,
-    clc.yellow(`${getCurrentTime()}`) + clc.magenta(` [FUN]`) + ` Bienvenue au Freddy Fazbear's Pizza, où la magie prend vie. Ne reste pas trop tard.`,
-];
-
-
-// Fonction pour afficher un message aléatoire
-const displayRandomMessage = () => {
-    const randomIndex = Math.floor(Math.random() * messages.length);
-    console.log(messages[randomIndex]);
-};
-
-// Quand le bot est prêt
+// Gestion des événements du bot
 client.on('ready', () => {
-  const now = new Date();
-  const hour = now.getHours();
-  const minute = now.getMinutes();
-  const second = now.getSeconds();
-  const times = `[${hour}:${minute}:${second}]`;
+  displayRandomMessage();
+  console.log(clc.green(`[${getCurrentTime()}] Le bot est prêt !`));
 
-  try {
-    displayRandomMessage();
-    console.log(clc.yellow(`${times}`) + clc.green(` [OK]`) + ` Connexion à l'API Discord.js effectuée`);
-    console.log(clc.yellow(`${times}`) + clc.green(` [SERVER]`) + ` Initialisation du serveur en cours...`);
-    console.log(clc.yellow(`${times}`) + clc.blue(` [SERVER]`) + ` Serveur opérationnel. Les systèmes sont prêts.`);
-    console.log(clc.yellow(`${times}`) + clc.cyan(` [BOT]`) + ` Démarrage du bot... Activation des modules.`);
-    console.log(clc.yellow(`${times}`) + clc.green(` [BOT]`) + ` Connecté sur ${client.user.username}#${client.user.discriminator}.`);
-    console.log(clc.yellow(`${times}`) + clc.magenta(` [BOT]`) + ` Chargement des commandes terminées.`);
-    console.log(clc.yellow(`${times}`) + clc.red(` [SERVER]`) + ` Attention : fluctuations détectées dans les logs du démarrage. Tout est (probablement) sous contrôle.`);
-    console.log(clc.yellow(`${times}`) + clc.green(` [OK]`) + ` Le serveur et le bot sont prêts à fonctionner.`);
-
-    
-
-    // Envoie un message dans le canal de log
-    const channel = client.channels.cache.get(CHANNEL_LOG);
-    if (channel) {
-      channel.send(`\`\`\`css\n${times} 🚀 Le bot est en ligne et prêt !\n\`\`\``);
-    } else {
-      console.log(clc.red('❌ Canal de log introuvable lors du démarrage'));
-    }
-
-    // Lancer la rotation des activités toutes les 20 secondes
-    rotateActivity(); // Initialiser avec la première activité
-    setInterval(rotateActivity, 20000); // Changer toutes les 20 secondes
-  } catch (error) {
-    console.log(clc.red(`${times} [ERROR] Erreur lors de la préparation du bot : ${error.message}`));
+  const channel = client.channels.cache.get(CHANNEL_LOG);
+  if (channel) {
+    channel.send(`\`\`\`css\n[${getCurrentTime()}] 🚀 Le bot est en ligne et prêt !\n\`\`\``);
+  } else {
+    console.log(clc.red('❌ Canal de log introuvable lors du démarrage'));
   }
+
+  rotateActivity();
+  setInterval(rotateActivity, 20000);
 });
 
-// Gérer les messages
 client.on('messageCreate', (message) => {
   if (message.author.bot) return;
 
-  const commandName = message.content.split(' ')[0].toLowerCase(); // Commande de base sans le préfixe
+  const commandName = message.content.split(' ')[0].toLowerCase();
   if (client.commands.has(commandName)) {
     client.commands.get(commandName)(message);
+  } else {
+    message.reply(`❌ Commande inconnue : **${commandName}**`);
   }
 });
 
-// Quand le bot se déconnecte
-client.on('disconnect', () => {
-  const now = new Date();
-  const hour = now.getHours();
-  const minute = now.getMinutes();
-  const second = now.getSeconds();
-  const times = `[${hour}:${minute}:${second}]`;
-
-  console.log(clc.red(`${times} [ERROR] Le bot a été déconnecté ou a rencontré une erreur`));
+process.on('SIGINT', () => {
+  console.log(clc.red(`[BOT] Arrêt en cours...`));
+  client.destroy();
+  process.exit(0);
 });
 
-// Lancer le bot
 client.login(DISCORD_TOKEN);
