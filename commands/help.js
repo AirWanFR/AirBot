@@ -1,26 +1,34 @@
 const { EmbedBuilder } = require('discord.js');
+const dotenv = require('dotenv');
+dotenv.config();
 
-// Récupérer le préfixe depuis .env
-const PREFIX = process.env.PREFIX || 'aw!';
+// Récupérer le préfixe depuis le fichier .env
+const PREFIX = process.env.PREFIX || "!";
 
 module.exports = {
   name: 'help',
-  execute(message, args) {
-    // Création de l'embed pour la commande help
-    const exampleEmbed = new EmbedBuilder()
+  description: 'Affiche la liste des commandes disponibles',
+  execute(message) {
+    // Créer un embed pour la commande help
+    const helpEmbed = new EmbedBuilder()
       .setColor(0x0099FF)
       .setTitle('Liste des commandes disponibles')
-      .setDescription(`Voici les commandes disponibles pour le bot avec le préfixe \`${PREFIX}\`:`)
+      .setDescription('Voici la liste des commandes que vous pouvez utiliser avec le bot :')
       .addFields(
-        { name: `${PREFIX}help`, value: 'Affiche la liste des commandes.' },
-        { name: `${PREFIX}setactivity`, value: 'Change l\'activité du bot.' },
-        { name: `${PREFIX}setstatus`, value: 'Change le statut du bot.' },
-        { name: `${PREFIX}shutdown`, value: 'Éteint le bot.' },
-        // Ajoutez d'autres commandes ici
+        { name: `${PREFIX}airwan`, value: 'Affiche des informations sur Airwan.', inline: false },
+        { name: `${PREFIX}infouser`, value: 'Affiche des informations sur l\'utilisateur.', inline: false },
+        { name: `${PREFIX}presence`, value: 'Affiche la présence actuelle du bot.', inline: false },
+        { name: `${PREFIX}setactivity`, value: 'Change l\'activité du bot.', inline: false },
+        { name: `${PREFIX}setprefix`, value: 'Modifie le préfixe du bot.', inline: false },
+        { name: `${PREFIX}setstatus`, value: 'Change le statut du bot.', inline: false },
+        { name: `${PREFIX}shutdown`, value: 'Arrête le bot.', inline: false },
+        { name: `${PREFIX}status`, value: 'Affiche le statut actuel du bot.', inline: false },
+        { name: `${PREFIX}ping`, value: 'Affiche le ping actuel du bot.', inline: false }
       )
-      .setFooter({ text: 'Utilisez le préfixe suivi de la commande' });
+      .setTimestamp()
+      .setFooter({ text: `Commande exécutée par ${message.author.username}`, iconURL: message.author.displayAvatarURL() });
 
-    // Envoi de l'embed dans le même canal
-    message.channel.send({ embeds: [exampleEmbed] });
+    // Envoyer l'embed dans le canal d'où provient la commande
+    message.channel.send({ embeds: [helpEmbed] });
   },
 };
