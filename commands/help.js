@@ -1,10 +1,19 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 
 module.exports = {
   name: 'help',
   description: 'Affiche la liste des commandes disponibles avec pagination.',
   async execute(message) {
     const PREFIX = process.env.PREFIX || 'aw!';
+
+    // Vérifier si le bot a les permissions nécessaires
+    if (!message.guild) return;
+
+    const botPermissions = message.guild.members.me.permissions;
+    if (!botPermissions.has(PermissionsBitField.Flags.AddReactions) ||
+        !botPermissions.has(PermissionsBitField.Flags.ReadMessageHistory)) {
+      return message.channel.send('❌ Je n\'ai pas les permissions nécessaires pour gérer les réactions.');
+    }
 
     // Liste des commandes
     const commands = [
@@ -19,72 +28,62 @@ module.exports = {
       { name: `${PREFIX}ping`, value: 'Affiche le ping actuel du bot.' },
     ];
 
-    // Nombre de commandes par page
     const commandsPerPage = 5;
+    let currentPage = 0;
 
-    // Fonction pour générer un embed avec une liste de commandes
+    // Fonction pour générer un embed
     function generateEmbed(page) {
       const start = page * commandsPerPage;
       const end = start + commandsPerPage;
       const currentCommands = commands.slice(start, end);
 
-      const embed = new EmbedBuilder()
+      return new EmbedBuilder()
         .setColor(0x0099FF)
-        .setTitle('Liste des commandes disponibles')
-        .setDescription('Voici la liste des commandes que vous pouvez utiliser avec ce bot :')
+        .setTitle('📜 Liste des commandes')
+        .setDescription('Utilisez les réactions pour naviguer entre les pages.')
         .addFields(currentCommands.map(cmd => ({ name: cmd.name, value: cmd.value, inline: false })))
-        .setTimestamp()
-        .setFooter({ text: `Page ${page + 1} / ${Math.ceil(commands.length / commandsPerPage)}`, iconURL: message.author.displayAvatarURL() });
-
-      return embed;
+        .setFooter({ text: `Page ${page + 1} / ${Math.ceil(commands.length / commandsPerPage)}` });
     }
 
-    // Envoyer l'embed pour la première page
-    const embed = generateEmbed(0);
+    // Envoyer l'embed initial
+    const embed = generateEmbed(currentPage);
     const msg = await message.channel.send({ embeds: [embed] });
 
-    // Ajouter des réactions pour la pagination
-    await msg.react('◀️'); // Réaction pour la page précédente
-    await msg.react('▶️'); // Réaction pour la page suivante
+    try {
+      await msg.react('◀️');
+      await msg.react('▶️');
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout des réactions:', error);
+      return message.channel.send('❌ Impossible d\'ajouter les réactions. Vérifiez mes permissions.');
+    }
 
-    // Créer un filtre pour les réactions
-    const filter = (reaction, user) => {
-      return ['◀️', '▶️'].includes(reaction.emoji.name) && !user.bot;
-    };
-
-    // Créer un collector de réactions
+    // Filtre pour capturer uniquement les réactions valides des utilisateurs (pas de bots)
+    const filter = (reaction, user) => ['◀️', '▶️'].includes(reaction.emoji.name) && !user.bot;
     const collector = msg.createReactionCollector({ filter, time: 60000 });
 
-    let currentPage = 0;
-
-    // Lorsque une réaction est collectée
     collector.on('collect', async (reaction, user) => {
-      console.log('Réaction collectée:', reaction.emoji.name); // Débogage pour vérifier la réaction collectée
+      console.log(`Réaction reçue: ${reaction.emoji.name} de ${user.tag}`);
 
-      // Enlever la réaction après qu'elle ait été collectée
-      await reaction.users.remove(user);
+      // Retirer la réaction de l'utilisateur
+      await reaction.users.remove(user).catch(console.error);
 
-      if (reaction.emoji.name === '▶️') {
-        // Aller à la page suivante si possible
-        if (currentPage < Math.ceil(commands.length / commandsPerPage) - 1) {
-          currentPage++;
-          const newEmbed = generateEmbed(currentPage);
-          await msg.edit({ embeds: [newEmbed] });
-        }
-      } else if (reaction.emoji.name === '◀️') {
-        // Aller à la page précédente si possible
-        if (currentPage > 0) {
-          currentPage--;
-          const newEmbed = generateEmbed(currentPage);
-          await msg.edit({ embeds: [newEmbed] });
-        }
+      if (reaction.emoji.name === '▶️' && currentPage < Math.ceil(commands.length / commandsPerPage) - 1) {
+        currentPage++;
+      } else if (reaction.emoji.name === '◀️' && currentPage > 0) {
+        currentPage--;
+      } else {
+        return;
       }
+
+      const newEmbed = generateEmbed(currentPage);
+      await msg.edit({ embeds: [newEmbed] }).catch(console.error);
     });
 
-    // Lorsque le temps est écoulé, arrêter la collecte
     collector.on('end', async () => {
-      console.log('Collector terminé, suppression des réactions'); // Débogage pour vérifier que la collecte se termine
-      await msg.reactions.removeAll(); // Supprimer toutes les réactions après la fin de la collecte
+      console.log('Fin du collector de réactions.');
+      if (botPermissions.has(PermissionsBitField.Flags.ManageMessages)) {
+        await msg.reactions.removeAll().catch(console.error);
+      }
     });
   },
 };
